@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const OpenAI = require('openai');
 
@@ -9,6 +10,13 @@ app.use(bodyParser.json());
 
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const ENGINE_ID = 'gpt-3.5-turbo';
+
+// database connection
+const dbURI = 'mongodb+srv://TestUser:Test1234@cluster0.00e6uvo.mongodb.net/emailSum-auth';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true })
+  .then((result) => app.listen(PORT))
+  .catch((err) => console.log(err));
+
 
 app.listen(PORT, () => console.log(`It's alive at: http://localhost:${PORT}/`));
 
