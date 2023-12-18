@@ -13,13 +13,38 @@ const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const ENGINE_ID = 'gpt-3.5-turbo';
 
 // database connection (change user name and password to yours)
-const dbURI = 'mongodb+srv://TestUser:Test1234@cluster0.00e6uvo.mongodb.net/emailSum-auth'; 
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true })
-  .then((result) => app.listen(PORT))
-  .catch((err) => console.log(err));
+// const dbURI = 'mongodb+srv://TestUser:Test1234@cluster0.00e6uvo.mongodb.net/emailSum-auth'; 
+// mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true })
+//   .then((result) => app.listen(PORT))
+//   .catch((err) => console.log(err));
 
+function connectDB() {
+  const url = 'mongodb://127.0.0.1:27017';
+ 
+  try {
+    mongoose.connect(url, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true
+    });
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+  const dbConnection = mongoose.connection;
+  dbConnection.once("open", (_) => {
+    console.log(`Database connected: ${url}`);
+  });
+ 
+  dbConnection.on("error", (err) => {
+    console.error(`connection error: ${err}`);
+  });
+  return;
+}
 
-app.use(authRoutes);
+connectDB();
+
+app.use('/auth', authRoutes);
 
 app.listen(PORT, () => console.log(`It's alive at: http://localhost:${PORT}/`));
 
