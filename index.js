@@ -19,7 +19,7 @@ const ENGINE_ID = 'gpt-3.5-turbo';
 //   .catch((err) => console.log(err));
 
 function connectDB() {
-  const url = 'mongodb://127.0.0.1:27017';
+  const url = 'mongodb://127.0.0.1:27017/?directConnection=true';
  
   try {
     mongoose.connect(url, {
@@ -55,6 +55,7 @@ app.post('/EmailSummarizer/email', async (req, res) => {
     const summary = await generateOpenAISummary(emailText);
     const sentiment = await generateOpenAISentiment(emailText);
     const awaitingResponse = determineIfAwaitingResponse(emailText);
+    console.log("sucsses!")
 
     res.status(200).json({
       summary,
